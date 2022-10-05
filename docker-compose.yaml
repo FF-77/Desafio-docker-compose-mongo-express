@@ -1,0 +1,34 @@
+version: '3.3'
+
+networks:
+  rede_mongo:
+    driver: bridge
+
+volumes:
+  vol_mongo:
+
+services:
+  mongodb:
+    image: mongo:4.4.6
+    ports:
+      - 27017:27017
+    networks:
+      - rede_mongo
+    volumes:
+      - vol_mongo:/data/db
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: admin
+      MONGO_INITDB_ROOT_PASSWORD: admin_mongo
+
+  mongo-express:
+    image: mongo-express
+    ports:
+      - 8081:8081
+    networks:
+      - rede_mongo
+    depends_on:
+      - mongodb
+    environment:
+      ME_CONFIG_MONGODB_ADMINUSERNAME: admin
+      ME_CONFIG_MONGODB_ADMINPASSWORD: admin_mongo
+      ME_CONFIG_MONGODB_URL: mongodb://admin:admin_mongo@mongodb:27017/
